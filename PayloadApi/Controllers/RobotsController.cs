@@ -17,26 +17,11 @@ namespace PayloadApi.Controllers
     [ApiController]
     public class RobotsController : ControllerBase
     {
-
-        public RobotManager RobotManager { get; set; }
-        // GET: api/<RobotsController>
-        //[AllowAnonymous]
-        //[HttpGet]
-        //public async Task<IActionResult> Get()
-        //{
-        //    using (var client = new HttpClient())
-        //    {
-        //        client.BaseAddress = new Uri("https://60c8ed887dafc90017ffbd56.mockapi.io/robots");
-
-        //        using (HttpResponseMessage response = await client.GetAsync("robots")) 
-        //        {
-        //            var responseContent = response.Content.ReadAsStringAsync().Result;
-        //            response.EnsureSuccessStatusCode();
-
-        //            return Ok(responseContent);
-        //        }
-        //    }
-        //}
+        private readonly IRobotManager _robotManager;
+        public RobotsController(IRobotManager robotManager)
+        {
+            _robotManager = robotManager;
+        }
 
         // GET api/<RobotsController>/5
         [HttpGet("{id}")]
@@ -45,23 +30,13 @@ namespace PayloadApi.Controllers
             return "value";
         }
         
-        [AllowAnonymous]
-        [HttpGet]
-        public string Get()
-        {
-            RobotManager = new RobotManager();
-            var desRobots = RobotManager.GetDeserializedRobots();
-            return RobotManager.GetRobots();
-        }
 
         // POST api/<RobotsController>/closest
         [Route("closest")]
         [HttpPost]
         public PayloadResponse Post([FromBody] Payload payload)
-        {
-            RobotManager = new RobotManager();
-            var desRobots = RobotManager.GetDeserializedRobots();
-            return RobotManager.GetNearestRobot(desRobots, payload);
+        {                   
+            return _robotManager.GetNearestRobot(payload);
         }
 
         // PUT api/<RobotsController>/5

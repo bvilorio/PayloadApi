@@ -8,31 +8,25 @@ using System.Threading.Tasks;
 
 namespace PayloadApi
 {
-    public class RobotManager
+    public interface IRobotManager
+    {
+        
+         PayloadResponse GetNearestRobot(Payload payload);
+    }
+
+    public class RobotManager :IRobotManager
     {
 
-        RobotProvidercs _robotProvider;
+        RobotProvider _robotProvider;
         public RobotManager()
         {
-            _robotProvider = new RobotProvidercs();
-        }
-
-        public string GetRobots() 
-        {
-            return _robotProvider.GetRobots();
-        }
-
-        //Deserialize the Robots jSON
-        public IEnumerable<Robot> GetDeserializedRobots() 
-        {
-
-            return JsonConvert.DeserializeObject<List<Robot>>(_robotProvider.GetRobots()); ;
-   
+            _robotProvider = new RobotProvider();
         }
 
         //Logic for returning the right payload
-        public PayloadResponse GetNearestRobot(IEnumerable<Robot> robots, Payload payload) 
+        public PayloadResponse GetNearestRobot( Payload payload) 
         {
+            var robots = JsonConvert.DeserializeObject<List<Robot>>(_robotProvider.GetRobots());
             var robotDistanceFromPayload = 0.0;
             var closestDistance = 0.0;
             Robot closestRobot = null;
@@ -74,7 +68,7 @@ namespace PayloadApi
             return payloadResponse;
         }
 
-        public double CalculateDistance(double x1, double y1, double x2, double y2) 
+        private double CalculateDistance(double x1, double y1, double x2, double y2) 
         {
             return Math.Sqrt(Math.Pow((x2 - x1), 2) + Math.Pow((y2 - y1), 2));
         } 

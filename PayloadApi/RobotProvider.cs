@@ -9,14 +9,19 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 namespace PayloadApi
 {
-    public class RobotProvidercs
+    public class RobotProvider
     {
+        WebClient _webClient;
+        public RobotProvider()
+        {
+            _webClient = new WebClient(); 
+        }
         //Getting data from svt api
         public string GetRobots()
         {
-            var web = new WebClient();
+            
             string url = "https://60c8ed887dafc90017ffbd56.mockapi.io/robots";
-            var response = web.DownloadString(url);
+            var response = _webClient.DownloadString(url);
             return response;
         }
     }
